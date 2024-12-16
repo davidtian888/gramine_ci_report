@@ -33,3 +33,4 @@
 32,hudson.remoting.ChannelClosedException: Channel "hudson.remoting.(.*)The channel is closing down,Local CI Error
 33,ERROR:(.*)read: connection reset by peer,Network Connection Error
 34,Unable to establish SSL connection,SSL Connection Error
+35,"ERROR: Unknown options: ""sgx_driver, sgx_driver_include_path""",Meson Build Error

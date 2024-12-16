@@ -10,3 +10,4 @@ S.No,Test,Mode,BaseOS,Node,Description,Issue Link
 11,test_tfserving_workload,,,graphene_dcap_server_orig,,
 12,test_iperf_workload,,,graphene_dcap_server_orig,,
 13,test_scikit_learn_intelex_workload,Gramine SGX,Ubuntu 22.04,,Issuetobeadded,
+14,test_scikit_learn_intelex_workload,Gramine EDMM,Ubuntu 22.04,,Issuetobeadded,

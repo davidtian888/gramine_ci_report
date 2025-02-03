@@ -180,7 +180,7 @@ class FailureAnalyser():
             self.test_report = self.ci_obj.jenkins_server.get_build_test_report(self.job_name, int(self.build_no))
             self.console_out = self.get_console_output(self.job_name, self.build_no)
         else:
-            self.console_out == "Build Number not specified"
+            self.console_out = "Build Number not specified"
             self.test_report = {}
 
     def suites_failure_parsing(self, val_data, suites_list):

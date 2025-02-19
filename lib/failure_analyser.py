@@ -5,6 +5,7 @@ import re
 from data.constants import *
 import requests
 import traceback
+from lib.openai_analyser import OpenAIAnalyser
 
 class FailureAnalyser():
     def __init__(self, ra, ci_obj):
@@ -17,6 +18,7 @@ class FailureAnalyser():
                                                "Gramine_Failures.csv"))
         self.error_df = pd.read_csv(os.path.join(os.path.dirname(__file__), "..", "data",
                                                  "CI_Failures.csv"))
+        self.ai_analyser = OpenAIAnalyser()
 
     def get_suites_list(self, test_list):
         comb_list = []
@@ -92,15 +94,21 @@ class FailureAnalyser():
         baseos_failures = self.get_baseos_failures(exec_mode=exec_mode, base_os=base_os, node_label=node_label)
         return baseos_failures
 
-    def build_err_parsing(self, out):
+    def build_err_parsing(self, out, use_ai=True):
         err_list = [desc[1]["Category"] for desc in self.error_df.iterrows() if re.search(desc[1]["Error Message"], out)]
         err_list = ", ".join(list(set(err_list)))
-        return err_list
+        err_type = "ci"
+
+        if not err_list:
+            err_list = self.ai_analyser.generate_inference(out) if use_ai else "Unknown Failure"
+            err_type = "openai" if use_ai else "other"
+        return err_list, err_type
 
     def get_console_output(self, n_job, n_build):
         if n_job.endswith(f"_{n_build}"):
             n_job = n_job.split(f"_{n_build}")[0]
         return self.ci_obj.jenkins_server.get_build_console_output(n_job, n_build)
+
 
     def curation_workload_parsing(self, workload):
         try:
@@ -109,36 +117,43 @@ class FailureAnalyser():
             result = [out for out in console_data if out.startswith(f"{workload} ")][0]
             if binfo and "artifacts" in binfo.keys():
                 artifacts = [artifacts["fileName"] for artifacts in binfo["artifacts"] \
-                             if re.search(workload+"(_verifier.log|.txt)", artifacts["fileName"])]
+                             if re.search(workload+"(_verifier.log|.txt|_console.log)", artifacts["fileName"])]
                 for file_name in artifacts:
                     response = requests.get(f"{JENKINS_URL}/job/{self.job_name}/{self.build_no}/artifact/{file_name}")
                     if response.status_code == 200:
-                        result += "\n" + response.text
+                        if "verifier.log" in file_name and "Successfully tagged verifier:latest" in response.text:
+                            continue
+                        elif f"{workload}.txt" == file_name and "Successfully built a signed Docker image `gsc" in response.text:
+                            continue
+
+                        result = response.text + "\n" + result
             if len(result.split("\n")) < 3:
                 tc_data = [tc for suite in self.test_report["suites"] for tc in suite["cases"] if
                            (tc["name"] == workload and tc["status"] != "PASSED")][0]
                 if "errorStackTrace" in tc_data.keys(): result += tc_data["errorStackTrace"]
-            err_data = self.build_err_parsing(result)
+            err_data, err_type = self.build_err_parsing(result)
         except Exception:
             err_data = ""
             print(f"Exception occured during curation_workload_parsing {workload} {traceback.print_exc()}")
-        return err_data
+        return err_data, err_type
 
     def test_err_parsing(self, failure):
         try:
             tc_data = [tc for suite in self.test_report["suites"] for tc in suite["cases"] if (tc["name"] == failure and tc["status"] != "PASSED")][0]
-            err_data = self.build_err_parsing(tc_data["stdout"] + tc_data["stderr"])
+            err_data, err_type = self.build_err_parsing(tc_data["stdout"] + tc_data["stderr"])
         except Exception:
             err_data = ""
             print(f"Exception occured during test_err_parsing {failure} {traceback.print_exc()}")
-        return err_data
+        return err_data, err_type
 
     def workload_err_parsing(self, failure):
         try:
+            use_ai=True
             if failure.startswith("test_gsc_"):
                 workload = re.match("test_gsc_(.*)_workload", failure).groups()[0]
                 out_data = [out for out in self.console_out.split("[Pipeline] sh") if f'gsc-{workload.replace("_", "-")}' in out]
                 result = ["\n".join(out_data)]
+                use_ai = False
             elif failure.startswith("test_stress_ng"):
                 workload = re.match("test_stress_ng_(.*)", failure).groups()[0]
                 result = [out for out in self.console_out.split("[Pipeline] sh") if re.search(
@@ -147,31 +162,31 @@ class FailureAnalyser():
                 workload = re.match("test_(.*)", failure).groups()[0].replace(
                                              "_workload", "").replace("_", "-")
                 result = [out for out in self.console_out.split("[Pipeline] sh\r\n") if f"cd CI-Examples/{workload}\n" in out]
-            err_data = self.build_err_parsing(result[0])
+            err_data, err_type = self.build_err_parsing(result[0], use_ai)
         except Exception as e:
-            err_data = ""
+            err_data, err_type = "", ""
             print(f"Exception occured during workload_err_parsing {self.job_name} {failure} ", traceback.print_exc())
-        return err_data
+        return err_data, err_type
 
     def sdtest_error_parsing(self):
         try:
-            err_data = self.build_err_parsing(self.console_out)
+            err_data, err_type = self.build_err_parsing(self.console_out, use_ai=False)
         except Exception as e:
             err_data = ""
             print(f"Exception occured during sdtest_error_parsing {self.job_name}", traceback.print_exc())
-        return err_data
+        return err_data, err_type
 
 
     def error_parsing(self, workload, suite):
         if  "curation" in self.job_name:
-            err_out = self.curation_workload_parsing(workload)
+            err_out, err_type = self.curation_workload_parsing(workload)
         elif "sdtest" in workload:
-            err_out = self.sdtest_error_parsing()
+            err_out, err_type = self.sdtest_error_parsing()
         elif suite in ["test_workloads", "tests_stressng"]:
-            err_out = self.workload_err_parsing(workload)
+            err_out, err_type = self.workload_err_parsing(workload)
         else:
-            err_out = self.test_err_parsing(workload)
-        return err_out
+            err_out, err_type = self.test_err_parsing(workload)
+        return err_out, err_type
 
     def get_build_data(self, job_data, job_name):
         self.job_name = job_name
@@ -195,11 +210,7 @@ class FailureAnalyser():
                         err_str = "Known Failure, No Description provided" if desc is None else desc.unique()[0]
                         err_type = "baseos"
                     else:
-                        err_str = self.error_parsing(failure, suite)
-                        err_type = "ci"
-                        if not err_str:
-                            err_str = "Unknown Failure"
-                            err_type = "other"
+                        err_str, err_type = self.error_parsing(failure, suite)
                     wkd_data[failure] = {"err": err_str, "err_type": err_type}
         except Exception as e:
             print(f"Failed to parse suite data for n_job: {self.job_name}, {traceback.print_exc()}")
@@ -216,11 +227,11 @@ class FailureAnalyser():
                 summary_data[n_job] = {"build_details": val["build_details"]}
                 if (val["build_details"]["result"] in ["FAILURE",  None]) and (suites_list == []):
                     if self.console_out == "Build Number not specified":
-                        err_list = "Build Not Triggered Yet"
+                        err_msg, err_type = "Build Not Triggered Yet", "ci"
                     else:
-                        err_list = self.build_err_parsing(self.console_out)
-                    summary_data[n_job]["build_details"].update({"err": err_list if err_list else "Unknown Failure",
-                                                                 "err_type": "ci"  if err_list else "other"})
+                        err_msg, err_type = self.build_err_parsing(self.console_out)
+                    summary_data[n_job]["build_details"].update({"err": err_msg,
+                                                                 "err_type": err_type})
                 elif suites_list != []:
                     summary_data[n_job].update(self.suites_failure_parsing(val, suites_list))
 
@@ -240,7 +251,7 @@ class FailureAnalyser():
             else:
                 if out[workload]["err_type"] == "baseos":
                     df_1.loc[col1, col2] = ''
-                elif out[workload]["err_type"] == "other":
+                elif out[workload]["err_type"] in ["openai", "other"]:
                     df_1.loc[col1, col2] = 'background-color: orange;'
                 else:
                     df_1.loc[col1, col2] = 'background-color: #FFEB9C;'

@@ -28,7 +28,7 @@ class SummaryAnalyser:
         def apply_style(row):
             if row['ErrType'] == 'ci':
                 color = '#FFEB9C'
-            elif row["ErrType"] == "other":
+            elif row["ErrType"] in ["other", "openai"]:
                 color = 'orange'
             else:
                 color = 'white'

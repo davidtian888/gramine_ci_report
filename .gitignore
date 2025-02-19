@@ -3,5 +3,6 @@
 *.py[co]
 __pycache__
 .pytest_cache
+.cache
 
 results/*

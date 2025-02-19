@@ -34,3 +34,7 @@
 33,ERROR:(.*)read: connection reset by peer,Network Connection Error
 34,Unable to establish SSL connection,SSL Connection Error
 35,"ERROR: Unknown options: ""sgx_driver, sgx_driver_include_path""",Meson Build Error
+36,graminelibos.manifest.ManifestError: Unknown loader.entrypoint format,Gramine Issue
+37,C header 'asm/sgx.h' not found,SGX Header File Issue
+38,Can't start server: Bind on TCP/IP port(.*)Address already in use,Port in Use Error
+39,Cannot open SGX driver device. Please make sure you're using an up-to-date kernel or the standalone Intel SGX kernel module is loaded,SGX Driver Issue

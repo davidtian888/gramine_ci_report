@@ -56,7 +56,7 @@ class OpenAIAnalyser:
                 "sender": self.user_proxy,
                 "recipient": self.ai_agent,
                 "message": prompt,
-                "max_turns": 3, 
+                "max_turns": 1, 
                 "summary_method": "reflection_with_llm",
             }]
         )

@@ -148,12 +148,10 @@ class FailureAnalyser():
 
     def workload_err_parsing(self, failure):
         try:
-            use_ai=True
             if failure.startswith("test_gsc_"):
                 workload = re.match("test_gsc_(.*)_workload", failure).groups()[0]
                 out_data = [out for out in self.console_out.split("[Pipeline] sh") if f'gsc-{workload.replace("_", "-")}' in out]
                 result = ["\n".join(out_data)]
-                use_ai = False
             elif failure.startswith("test_stress_ng"):
                 workload = re.match("test_stress_ng_(.*)", failure).groups()[0]
                 result = [out for out in self.console_out.split("[Pipeline] sh") if re.search(
@@ -162,7 +160,7 @@ class FailureAnalyser():
                 workload = re.match("test_(.*)", failure).groups()[0].replace(
                                              "_workload", "").replace("_", "-")
                 result = [out for out in self.console_out.split("[Pipeline] sh\r\n") if f"cd CI-Examples/{workload}\n" in out]
-            err_data, err_type = self.build_err_parsing(result[0], use_ai)
+            err_data, err_type = self.build_err_parsing(result[0])
         except Exception as e:
             err_data, err_type = "", ""
             print(f"Exception occured during workload_err_parsing {self.job_name} {failure} ", traceback.print_exc())

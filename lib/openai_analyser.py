@@ -22,7 +22,7 @@ class OpenAIAnalyser:
             "https": "http://proxy-dmz.intel.com:912/"
         }
         self.create_agent()
-        self.details = rf"""You are an assistant responsible for analyzing the given logs and identifying the root cause of the failure. Look for any error messages, stack traces, or other indications of what went wrong. Analyze the log to identify any potential issues or errors. There may be trace, debug, system calls, and workload execution. Pinpoint the exact cause of failure, as there may be several things that may look like errors.
+        self.details = rf"""You are an assistant responsible for analyzing the given logs and identifying the root cause of the failure. Look for any error messages, stack traces, or other indications of what went wrong. Analyze the log to identify any potential issues or errors. There may be trace, debug, system calls, and workload execution. Pinpoint the exact cause of failure, as there may be several things that may look like errors. You may occassionally see some warnings related to insecure configurations may be enabled and mounting errors for cpu_dma_latency and proc, including debug settings and untrusted command-line arguments, but they might not be the root cause of the failure
         
         Pay attention to the following areas or other indications of what went wrong: Network issues, Authentication problems, Repository access permissions, Configuration errors, Git Clone issues, Error Messages, Exceptions and stack traces. Use contextual information from the logs to understand the environment and conditions under which the failure occurred. Provide a concise analysis (20 words).
 
@@ -43,9 +43,9 @@ class OpenAIAnalyser:
     def preprocess_text(self, text):
         max_context = 128000
         if len(text) < max_context:
-            return text
+            return text.encode('ascii', 'ignore').decode('ascii')
         
-        return text[-min(max_context, len(text)):]
+        return text[-min(max_context, len(text)):].encode('ascii', 'ignore').decode('ascii')
 
     def generate_inference(self, text):
 

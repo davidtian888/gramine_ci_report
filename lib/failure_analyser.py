@@ -113,7 +113,7 @@ class FailureAnalyser():
     def curation_workload_parsing(self, workload):
         try:
             binfo = self.ci_obj.jenkins_server.get_build_info(self.job_name, self.build_no)
-            console_data = self.console_out.split("::TestClass::")
+            console_data = self.console_out.split("FAILURES")[0].split("::TestClass::")
             result = [out for out in console_data if out.startswith(f"{workload} ")][0]
             if binfo and "artifacts" in binfo.keys():
                 artifacts = [artifacts["fileName"] for artifacts in binfo["artifacts"] \
@@ -133,7 +133,7 @@ class FailureAnalyser():
                 if "errorStackTrace" in tc_data.keys(): result += tc_data["errorStackTrace"]
             err_data, err_type = self.build_err_parsing(result)
         except Exception:
-            err_data = ""
+            err_data, err_type = "", ""
             print(f"Exception occured during curation_workload_parsing {workload} {traceback.print_exc()}")
         return err_data, err_type
 

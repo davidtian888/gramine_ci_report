@@ -140,7 +140,11 @@ class FailureAnalyser():
     def test_err_parsing(self, failure):
         try:
             tc_data = [tc for suite in self.test_report["suites"] for tc in suite["cases"] if (tc["name"] == failure and tc["status"] != "PASSED")][0]
-            err_data, err_type = self.build_err_parsing(tc_data["stdout"] + tc_data["stderr"])
+            out = ""
+            for key in ["errorDetails", "errorStackTrace", "stdout", "stderr"]:
+                out += tc_data.get(key, "") + "\n"
+
+            err_data, err_type = self.build_err_parsing(out)
         except Exception:
             err_data = ""
             print(f"Exception occured during test_err_parsing {failure} {traceback.print_exc()}")

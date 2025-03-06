@@ -2,3 +2,4 @@ xlsxwriter
 python-jenkins
 autogen
 pandas
+jinja2

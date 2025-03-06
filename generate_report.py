@@ -6,8 +6,11 @@ from lib import ReportGeneration
 from data.constants import *
 import os
 
-del os.environ["http_proxy"]
-del os.environ["https_proxy"]
+for proxy in ["http_proxy", "https_proxy"]:
+    try:
+        del os.environ[proxy]
+    except:
+        pass
 
 if __name__ == "__main__":
 
@@ -22,7 +25,7 @@ if __name__ == "__main__":
         greport.build_details = rp.build_details = False
 
     report_result = greport.analyze_report(NIGHTLY_PIPELINE)
-    
+
     print(f"Starting Downstream Analysis for {NIGHTLY_PIPELINE} nightly jobs")
     nightly_df = rp.parse_output(report_result)
 

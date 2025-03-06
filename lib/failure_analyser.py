@@ -154,7 +154,7 @@ class FailureAnalyser():
         try:
             if failure.startswith("test_gsc_"):
                 workload = re.match("test_gsc_(.*)_workload", failure).groups()[0]
-                out_data = [out for out in self.console_out.split("[Pipeline] sh") if f'gsc-{workload.replace("_", "-")}' in out]
+                out_data = [out for out in self.console_out.split("[Pipeline] sh") if f'Executing Build gsc-{workload.replace("_", "-")}\n' in out]
                 result = ["\n".join(out_data)]
             elif failure.startswith("test_stress_ng"):
                 workload = re.match("test_stress_ng_(.*)", failure).groups()[0]

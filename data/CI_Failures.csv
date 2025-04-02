@@ -38,4 +38,5 @@
 37,C header 'asm/sgx.h' not found,SGX Header File Issue
 38,Can't start server: Bind on TCP/IP port(.*)Address already in use,Port in Use Error
 39,Cannot open SGX driver device. Please make sure you're using an up-to-date kernel or the standalone Intel SGX kernel module is loaded,SGX Driver Issue
-40,Error response from daemon: No such image: gsc-helloworld-test:latest,Gramine Issue
+40,error: load_enclave() failed with error: Operation not permitted,System Issue
+41,error: EDMM feature was requested in manifest. but SGX driver doesn't support it,EDMM NotSupported

@@ -38,7 +38,7 @@
 37,C header 'asm/sgx.h' not found,SGX Header File Issue
 38,Can't start server: Bind on TCP/IP port(.*)Address already in use,Port in Use Error
 39,Cannot open SGX driver device. Please make sure you're using an up-to-date kernel or the standalone Intel SGX kernel module is loaded,SGX Driver Issue
-40,error: load_enclave() failed with error,System Issue
+40,error: load_enclave.. failed with error,System Issue
 41,error: EDMM feature was requested in manifest. but SGX driver doesn't support it,EDMM NotSupported
 42,line 0: syntax error near unexpected token `&&',Gramine issue no 236
 43,secret_provision_start: Secret Provisioning could not connect to any of the servers specified in SECRET_PROVISION_SERVERS; last mbedTLS error was -68,Gramine issue no 239

@@ -17,3 +17,4 @@ S.No,Test,Mode,BaseOS,Node,Description,Issue Link
 18,test_gsc_helloworld_direct_workload,Gramine GSC,,graphene_suse_15.4,,https://github.com/gramineproject/gsc/issues/236
 19,test_gsc_helloworld_direct_workload,Gramine GSC,,graphene_icl_rhel9_6.7,,https://github.com/gramineproject/gsc/issues/236
 20,test_gsc_helloworld_direct_workload,Gramine GSC,,graphene_24.04_6.8_WilsonCity,,https://github.com/gramineproject/gsc/issues/236
+21,test_pytorch_default_with_debug,Gramine Curation,,,,https://github.com/gramineproject/contrib/issues/87

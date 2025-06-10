@@ -40,5 +40,6 @@
 39,Cannot open SGX driver device. Please make sure you're using an up-to-date kernel or the standalone Intel SGX kernel module is loaded,SGX Driver Issue
 40,error: load_enclave.. failed with error,System Issue
 41,error: EDMM feature was requested in manifest. but SGX driver doesn't support it,EDMM NotSupported
-42,line 0: syntax error near unexpected token `&&',Gramine issue no 236
-43,secret_provision_start: Secret Provisioning could not connect to any of the servers specified in SECRET_PROVISION_SERVERS; last mbedTLS error was -68,Gramine issue no 239
+42,line 0: syntax error near unexpected token `&&',https://github.com/gramineproject/gsc/issues/236
+43,secret_provision_start: Secret Provisioning could not connect to any of the servers specified in SECRET_PROVISION_SERVERS; last mbedTLS error was -68,https://github.com/gramineproject/gsc/issues/239
+44,extract_user_from_image_config.original_image.attrs.'Config'.,https://github.com/gramineproject/gsc/issues/243

@@ -7,11 +7,13 @@ S.No,Test,Mode,BaseOS,Node,Description,Issue Link
 6,test_310_socket_tcp_ipv6_v6only,Gramine EDMM,,,bind(ipv4) was successful even though there is no IPV6_V6ONLY on same port,
 7,test_mysql_latest_with_attestation,Gramine Curation,,,App version has upgraded to a newer version,
 8,test_gcc_workload,Gramine SGX,Alpine 3.18,,execv: Permission denied\ncompilation terminated,
-11,test_tfserving_workload,,,graphene_dcap_server_orig,,
-12,test_iperf_workload,,,graphene_dcap_server_orig,,
-13,test_scikit_learn_intelex_workload,Gramine SGX,Ubuntu 22.04,,Issuetobeadded,
-14,test_scikit_learn_intelex_workload,Gramine EDMM,Ubuntu 22.04,,Issuetobeadded,
-15,test_pytorch_workload,Gramine Native,,,PyTorch 2.6.0 Release: Model Loading Fails with Unpickling Error,
-16,test_pytorch_workload,Gramine SGX,,,PyTorch 2.6.0 Release: Model Loading Fails with Unpickling Error,
-17,test_pytorch_workload,Gramine EDMM,,,PyTorch 2.6.0 Release: Model Loading Fails with Unpickling Error,
-18,test_ovms_latest_with_attestation,Gramine Curation,,,App version has upgraded to a newer version,
+11,test_scikit_learn_intelex_workload,Gramine SGX,Ubuntu 22.04,,Issuetobeadded,
+12,test_scikit_learn_intelex_workload,Gramine EDMM,Ubuntu 22.04,,Issuetobeadded,
+13,test_pytorch_workload,Gramine Native,,,PyTorch 2.6.0 Release: Model Loading Fails with Unpickling Error,
+14,test_pytorch_workload,Gramine SGX,,,PyTorch 2.6.0 Release: Model Loading Fails with Unpickling Error,
+15,test_pytorch_workload,Gramine EDMM,,,PyTorch 2.6.0 Release: Model Loading Fails with Unpickling Error,
+16,test_ovms_latest_with_attestation,Gramine Curation,,,App version has upgraded to a newer version,
+17,test_gsc_ovms_workload,Gramine GSC,,,,https://github.com/gramineproject/gsc/issues/239
+18,test_gsc_helloworld_direct_workload,Gramine GSC,,graphene_suse_15.4,,https://github.com/gramineproject/gsc/issues/236
+19,test_gsc_helloworld_direct_workload,Gramine GSC,,graphene_icl_rhel9_6.7,,https://github.com/gramineproject/gsc/issues/236
+20,test_gsc_helloworld_direct_workload,Gramine GSC,,graphene_24.04_6.8_WilsonCity,,https://github.com/gramineproject/gsc/issues/236

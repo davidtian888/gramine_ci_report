@@ -10,7 +10,10 @@ class ReportGeneration():
         self.dest_path = os.path.join(dest_path, "Gramine_Report", self.build_folder)
 
     def copy_results(self):
-        if not os.path.exists(self.dest_path): os.makedirs(self.dest_path)
+        try:
+            os.makedirs(self.dest_path, exist_ok=True)
+        except Exception as e:
+            print("Failed to destination directory")
         print("Copying the excel data to {}".format(self.dest_path))
         os.system("cp -f " + self.result_file + " " + self.dest_path)
 

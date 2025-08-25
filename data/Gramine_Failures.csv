@@ -19,3 +19,6 @@ S.No,Test,Mode,BaseOS,Node,Description,Issue Link
 20,test_gsc_helloworld_direct_workload,Gramine GSC,,graphene_24.04_6.8_WilsonCity,,https://github.com/gramineproject/gsc/issues/236
 21,test_pytorch_default_with_debug,Gramine Curation,,,,https://github.com/gramineproject/contrib/issues/87
 22,test_scikit_learn_intelex_workload,,Ubuntu 22.04,,,https://github.com/uxlfoundation/scikit-learn-intelex/issues/2526
+23,test_mysql_workload,,Centos 10,,CentOS Stream 10 Failure,,
+24,test_python_workload,,Centos 10,,CentOS Stream 10 Failure,,
+25,test_mongodb_workload,,Centos 10,,CentOS Stream 10 Failure,,

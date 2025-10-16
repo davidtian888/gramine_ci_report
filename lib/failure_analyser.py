@@ -94,7 +94,7 @@ class FailureAnalyser():
         baseos_failures = self.get_baseos_failures(exec_mode=exec_mode, base_os=base_os, node_label=node_label)
         return baseos_failures
 
-    def build_err_parsing(self, out, use_ai=True):
+    def build_err_parsing(self, out, use_ai=False):
         err_list = [desc[1]["Category"] for desc in self.error_df.iterrows() if re.search(desc[1]["Error Message"], out)]
         err_list = ", ".join(list(set(err_list)))
         err_type = "ci"

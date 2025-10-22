@@ -18,7 +18,7 @@ class FailureAnalyser():
                                                "Gramine_Failures.csv"))
         self.error_df = pd.read_csv(os.path.join(os.path.dirname(__file__), "..", "data",
                                                  "CI_Failures.csv"))
-        self.ai_analyser = OpenAIAnalyser()
+       #self.ai_analyser = OpenAIAnalyser()
 
     def get_suites_list(self, test_list):
         comb_list = []
@@ -258,5 +258,6 @@ class FailureAnalyser():
                 else:
                     df_1.loc[col1, col2] = 'background-color: #FFEB9C;'
         return df_1
+
 
 
